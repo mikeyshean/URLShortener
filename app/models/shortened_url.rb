@@ -13,7 +13,10 @@ class ShortenedUrl < ActiveRecord::Base
     :foreign_key => :short_url_id,
     :primary_key => :id
 
-  has_many :visitors, through: :visits, source: :user
+  has_many :visitors,
+   Proc.new { distinct },
+   through: :visits,
+   source: :user
 
   def self.random_code
     short_url = nil
@@ -27,7 +30,8 @@ class ShortenedUrl < ActiveRecord::Base
   end
 
   def self.create_for_user_and_long_url!(user, long_url)
-    ShortenedUrl.create!(short_url: self.random_code, long_url: long_url, submitter_id: user.id)
+    last = ShortenedUrl.create!(short_url: self.random_code, long_url: long_url, submitter_id: user.id)
+    last.short_url
   end
 
   def num_clicks
@@ -35,13 +39,10 @@ class ShortenedUrl < ActiveRecord::Base
   end
 
   def num_uniques
-    visits.select(:user_id).distinct.count
+    visitors.count
   end
 
   def num_recent_uniques
     visits.select(:user_id).distinct.where({created_at: 10.minutes.ago..(Time.now)}).count
   end
-
-
-
 end
