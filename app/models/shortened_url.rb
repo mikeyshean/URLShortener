@@ -18,6 +18,13 @@ class ShortenedUrl < ActiveRecord::Base
    through: :visits,
    source: :user
 
+   has_many :taggings,
+   :class_name => "Tagging",
+   :foreign_key => :shortened_url_id,
+   :primary_key => :id
+
+   has_many :topics, through: :taggings, source: :topic
+
   def self.random_code
     short_url = nil
 
