@@ -8,4 +8,14 @@ class ShortenedUrl < ActiveRecord::Base
   :foreign_key => :submitter_id,
   :primary_key => :id
 
+  def self.random_code
+    short_url = nil
+    loop do
+      short_url = SecureRandom.urlsafe_base64
+      break unless ShortenedUrl.exists?(short_url: short_url)
+    end
+
+    short_url
+  end
+
 end
