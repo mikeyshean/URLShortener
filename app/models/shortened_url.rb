@@ -10,12 +10,21 @@ class ShortenedUrl < ActiveRecord::Base
 
   def self.random_code
     short_url = nil
+    
     loop do
       short_url = SecureRandom.urlsafe_base64
       break unless ShortenedUrl.exists?(short_url: short_url)
     end
 
     short_url
+  end
+
+  def self.create_for_user_and_long_url!(user, long_url)
+    ShortenedUrl.create!(short_url: self.random_code, long_url: long_url, submitter_id: user.id)
+  end
+
+  def inspect
+    p self.short_url
   end
 
 end
