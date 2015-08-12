@@ -3,14 +3,14 @@ class ShortenedUrl < ActiveRecord::Base
  validates :long_url,     :presence => true
  validates :submitter_id, :presence => true
 
- belongs_to :user,
+ belongs_to :submitter,
   :class_name => "User",
   :foreign_key => :submitter_id,
   :primary_key => :id
 
   def self.random_code
     short_url = nil
-    
+
     loop do
       short_url = SecureRandom.urlsafe_base64
       break unless ShortenedUrl.exists?(short_url: short_url)
@@ -23,8 +23,6 @@ class ShortenedUrl < ActiveRecord::Base
     ShortenedUrl.create!(short_url: self.random_code, long_url: long_url, submitter_id: user.id)
   end
 
-  def inspect
-    p self.short_url
-  end
+
 
 end
