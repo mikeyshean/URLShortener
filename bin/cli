@@ -14,10 +14,29 @@ case option
 when 0
   puts "Type in your long url"
   long_url = gets.chomp
-  puts "Short url is #{ShortenedUrl.create_for_user_and_long_url!(user, long_url)}"
+  new_short_url = ShortenedUrl.create_for_user_and_long_url!(user, long_url)
+  puts "Would you like to tag this URL?"
+  topic_id = nil
+  until topic_id == 0
+    puts " "
+    puts "1. Sports"
+    puts "2. History"
+    puts "3. News"
+    puts "4. Music"
+    puts "5. Humor"
+    puts "6. Technology"
+    puts "0. (DONE)"
+
+    topic_id = gets.chomp.to_i
+
+      Tagging.record_tag!(topic_id, new_short_url)
+  end
+  puts "Short url is #{new_short_url.short_url}"
+
+
 
 when 1
-  puts "Type in the Shortened Url"
+  puts "Type in the shortened URL"
   short_url = gets.chomp
   shortened_url = ShortenedUrl.find_by(short_url: short_url)
 
